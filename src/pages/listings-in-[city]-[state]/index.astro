@@ -1,0 +1,153 @@
+---
+import { getListingsInCity } from '../../utils/dataLoader';
+import { createUrlSlug, formatStateName } from '../../utils/urlHelper';
+import MainLayout from '../../layouts/MainLayout.astro';
+import type { Listing } from '../../types/listing';
+
+// Import components
+import ListingCard from '../../components/ListingCard.astro';
+import ListingFilters from '../../components/ListingFilters.astro';
+import NoResults from '../../components/NoResults.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import BackToState from '../../components/BackToState.astro';
+
+export async function getStaticPaths() {
+  // Dynamically generate paths for all cities in all states
+  const states = await import('../../utils/dataLoader').then(m => m.loadAllStates());
+  
+  const paths = [];
+  
+  for (const state of states) {
+    const cities = await import('../../utils/dataLoader').then(m => 
+      m.getAvailableCitiesInState(state)
+    );
+    
+    for (const city of cities) {
+      // Create a URL-friendly slug
+      const urlSlug = createUrlSlug(city);
+      
+      paths.push({
+        params: { 
+          city: urlSlug,
+          state: state.toLowerCase() 
+        },
+        props: { originalCity: city, originalState: state }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+// Get parameters and props
+const { city, state } = Astro.params;
+const { originalCity, originalState } = Astro.props;
+
+// Use the original values from props (passed during getStaticPaths)
+const cityName = originalCity;
+const stateSlug = originalState;
+
+// Format the state name for display
+const formattedStateName = formatStateName(stateSlug || '');
+
+const listings: Listing[] = await getListingsInCity(
+  stateSlug || '', 
+  cityName || ''
+);
+
+const listingCount = listings.length;
+const seoDescription = `Discover ${listingCount} listings in ${cityName}, ${formattedStateName}. Find the best options with various amenities and features.`;
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": listings.slice(0, 10).map((listing, index) => ({
+    "@type": "LocalBusiness",
+    "position": index + 1,
+    "name": listing.name,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": listing.address?.split(',')[0] || "",
+      "addressLocality": listing.city || cityName,
+      "addressRegion": listing.state || formattedStateName
+    },
+    "telephone": listing.phone || "",
+    "url": listing.website || "",
+    "priceRange": listing.price || "",
+    "aggregateRating": listing.rating ? {
+      "@type": "AggregateRating",
+      "ratingValue": listing.rating
+    } : undefined
+  }))
+};
+---
+
+<MainLayout 
+  title={`The BEST Listings in ${cityName}, ${formattedStateName} 📍`}
+  description={seoDescription}
+  cityName={cityName}
+  stateName={formattedStateName}
+>
+  <div class="container mx-auto px-4 py-8">
+    <PageHeader 
+      title={`The BEST Listings in ${cityName}, ${formattedStateName} 📍`} 
+      subtitle={`Discover the best ${listingCount} places in ${cityName}`}
+    />
+    <div class="prose max-w-none mb-8 bg-white px-4 py-8 rounded-md">
+      <p class="text-lg">
+        Looking for the best listings in <span class="text-blue-600">{cityName}</span>, {formattedStateName}? Explore our curated list of {listingCount} local places, 
+        featuring options for various services, facilities, and amenities. Filter by features like accessibility options or parking 
+        to find the perfect spot.
+      </p>
+    </div>
+    
+    {listings.length > 0 ? (
+      <div>
+        <!-- Filter section -->
+        <ListingFilters totalCount={listings.length} />
+        
+        <!-- Listing Items -->
+        <div id="restaurantList" class="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
+          {listings.map(listing => (
+            <ListingCard listing={listing} />
+          ))}
+        </div>
+        
+        <!-- No Results Message -->
+        <NoResults 
+          id="noFilterResults" 
+          message="No listings match your filter criteria. Try changing or clearing your filters." 
+        />
+      </div>
+    ) : (
+      <p class="text-center text-amber-100">
+        No listings found in {cityName}, {formattedStateName}
+      </p>
+    )}
+
+    {listings.length > 0 && (
+      <div class="prose max-w-none mt-10 pt-8 border-t border-gray-200">
+        <h2>Finding Great Places in {cityName}, {formattedStateName}</h2>
+        <p>
+          {cityName} offers diverse options to satisfy any need. From family-friendly establishments to upscale venues, 
+          you'll find many options for on-site visits or services. Many local favorites offer specialty options unique to the {cityName} area.
+        </p>
+        <p>
+          When choosing a place in {cityName}, consider factors like location, price range, and available services. 
+          Many locations offer online booking, contactless options, and outdoor spaces. Use our filters to find the perfect place!
+        </p>
+        <h3>Popular Options in {cityName}</h3>
+        <p>
+          {cityName} locations provide everything from basic services to premium experiences. 
+          You'll also find specialty venues and creative options with locally-sourced features.
+        </p>
+      </div>
+    )}
+    
+    <BackToState 
+      state={formattedStateName} 
+      stateSlug={state.includes('-') ? state.split('-').pop() || state : state} 
+    />
+  </div>
+  
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+</MainLayout>

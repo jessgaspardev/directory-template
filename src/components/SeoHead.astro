@@ -1,0 +1,51 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  cityName?: string;
+  stateName?: string;
+  listingType?: string;
+}
+
+const {
+  title,
+  description = "Find the best listings across the United States",
+  canonicalUrl,
+  ogImage = "/images/share-image.jpg",
+  cityName,
+  stateName,
+  listingType = "listings"
+} = Astro.props;
+
+// Generate location-specific keywords
+let keywords = "directory, listings, local businesses";
+if (cityName && stateName) {
+  keywords += `, ${listingType} in ${cityName}, ${cityName} ${listingType}, best ${listingType} in ${cityName}, ${cityName} ${stateName} ${listingType}, ${listingType} in ${cityName}`;
+}
+---
+
+<!-- Primary Meta Tags -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+
+<!-- Canonical URL -->
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={ogImage} />

@@ -1,0 +1,39 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Page Not Found | Directory Website">
+  <div class="container mx-auto px-4 py-12 min-h-[60vh] flex items-center justify-center">
+    <div class="text-center max-w-lg">
+      <h1 class="text-9xl font-bold text-blue-600 mb-4">404</h1>
+      
+      <h2 class="text-3xl font-semibold mb-4">Oops! We couldn't find that page</h2>
+      
+      <p class="text-lg text-gray-600 mb-8">
+        The page you're looking for seems to have disappeared from our directory.
+      </p>
+      
+      <div class="mt-8 space-y-4">
+        <a 
+          href="/" 
+          class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Go back to Homepage
+        </a>
+        
+        <div>
+          <a 
+            href="/states" 
+            class="inline-block text-blue-600 hover:text-blue-800 transition-colors mt-4"
+          >
+            Browse States
+          </a>
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center text-8xl">
+        📍😟
+      </div>
+    </div>
+  </div>
+</MainLayout>

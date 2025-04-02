@@ -1,0 +1,35 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  backgroundImage?: string;
+}
+
+const { 
+  title, 
+  subtitle, 
+  // Default background if none is provided
+  backgroundImage = "/images/bgheader.avif" 
+} = Astro.props;
+---
+
+<div class="relative mb-8 rounded-lg overflow-hidden shadow-md">
+  <!-- Background Image with Overlay -->
+  <div class="relative h-48 md:h-64 bg-cover bg-center" style={`background-image: url('${backgroundImage}')`}>
+    <!-- Dark overlay for better text visibility -->
+    <div class="absolute inset-0 bg-black opacity-30"></div>
+    
+    <!-- Text Content -->
+    <div class="relative h-full flex flex-col justify-center text-center p-4 z-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
+        {title}
+      </h1>
+      
+      {subtitle && (
+        <p class="text-gray-200 max-w-xl mx-auto">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  </div>
+</div>

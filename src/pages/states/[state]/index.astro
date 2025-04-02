@@ -1,0 +1,50 @@
+---
+import { getAvailableCitiesInState } from '../../../utils/dataLoader';
+import { createUrlSlug, formatStateName } from '../../../utils/urlHelper';
+import MainLayout from '../../../layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+  const states = await import('../../../utils/dataLoader').then(m => m.loadAllStates());
+  
+  return states.map(state => ({
+    params: { state: state.toLowerCase() },
+    props: { state }
+  }));
+}
+
+const { state } = Astro.params;
+const cities = await getAvailableCitiesInState(state || '');
+
+// Get formatted state name for display
+const formattedStateName = formatStateName(state || '');
+---
+
+<MainLayout title={`Listings in ${formattedStateName}`}>
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-white">
+      Cities in {formattedStateName} With Listings 📍
+    </h1>
+    
+    <div class="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
+      {cities.map(city => (
+        <a 
+          href={`/listings-in-${createUrlSlug(city)}-${state}`}
+          class="bg-white shadow rounded-lg p-4 hover:bg-blue-50 transition-colors"
+        >
+          <h2 class="text-xl font-semibold text-gray-800">
+            {city}
+          </h2>
+          <p class="text-gray-500 text-sm">
+            View Listings
+          </p>
+        </a>
+      ))}
+    </div>
+    
+    {cities.length === 0 && (
+      <p class="text-center text-gray-600">
+        No cities found for {formattedStateName}
+      </p>
+    )}
+  </div>
+</MainLayout>

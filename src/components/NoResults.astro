@@ -1,0 +1,15 @@
+---
+interface Props {
+  message?: string;
+  id?: string;
+}
+
+const { 
+  message = "No results found.", 
+  id = "noResults" 
+} = Astro.props;
+---
+
+<div id={id} class="hidden text-center py-8">
+  <p class="text-amber-100 text-lg">{message}</p>
+</div>

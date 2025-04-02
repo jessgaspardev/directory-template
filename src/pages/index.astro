@@ -1,11 +1,135 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { loadAllStates } from '../utils/dataLoader';
+import MainLayout from '../layouts/MainLayout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const states = await loadAllStates();
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<MainLayout title="Directory Website - Find Listings Near You">
+    <div class="py-30 mx-auto w-full content-center items-center bg-white">
+        <h1 class="text-4xl lg:text-8xl lg:w-1/2 m-auto font-bold mb-6 text-center">
+            The Ultimate <span class="text-blue-600">📍 Directory</span> Platform 
+        </h1>
+        <div class="text-center">
+            <h2 class="mb-8 text-2xl text-gray-600 py-5">
+                Easily find the best listings near you!
+            </h2>
+            <a 
+                href="/states" 
+                class="bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+                Find Listings by State
+            </a>
+        </div>
+    </div>
+
+    <div class="py-30 flex flex-col justify-center bg-blue-200 px-5">
+        <div class="font-semibold text-center pb-5">
+            <p class="text-3xl lg:text-4xl capitalize">Every detail you need to <span class="text-blue-600">find</span> the perfect <span class="text-blue-600">listing</span> 📍</p>
+            <p class="text-xl font-semibold mb-2 text-gray-800 pt-5">Get directions and contact information plus:</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6 md:px-15 lg:px-30">
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">⭐ Average rating</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">🥡 Service options</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">💳 Payment options</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">⌚ Opening hours</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">🦽 Accessibility</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">💸 Price range</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">🍟 Offerings</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">🏢 Facility options</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">🧑🏿‍🤝‍🧑🏼 Typical crowd</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <p class="text-xl font-semibold">🚗 Parking</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="py-30 flex flex-col justify-center px-5 bg-green-200">
+        <div class="font-semibold text-center pb-5">
+            <p class="text-3xl lg:text-4xl capitalize pb-10">📍 Popular Cities</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:px-15 lg:px-30">
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-los-angeles-california">Los Angeles, CA</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-dallas-texas">Dallas, TX</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-las-vegas-nevada">Las Vegas, NV</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-san-diego-california">San Diego, CA</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-houston-texas">Houston, TX</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-miami-florida">Miami, FL</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-san-francisco-california">San Francisco, CA</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-chicago-illinois">Chicago, IL</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-philadelphia-pennsylvania">Philadelphia, PA</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-austin-texas">Austin, TX</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-denver-colorado">Denver, CO</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-seattle-washington">Seattle, WA</a>
+                </div>
+            </div>      
+        </div>
+    </div>
+
+    <div class="py-30 flex flex-col justify-center bg-blue-600 px-5">
+        <h2 class="text-3xl lg:text-4xl text-center font-semibold text-amber-200">FAQs</h2>
+        <div class="grid grid-cols-1 gap-6 md:px-15 lg:px-30 pt-10">
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 class="text-2xl font-semibold">What are the highest-rated listings in my area?</h3>
+                <p class="text-lg">Browse top-rated establishments based on verified customer reviews, expert opinions, and our proprietary rating system. We only showcase the absolute best listings!</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 class="text-2xl font-semibold">What are the best listings near me?</h3>
+                <p class="text-lg">Our directory helps you find top-rated listings in your area based on customer reviews, specialty services, and atmosphere.</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 class="text-2xl font-semibold">How do I find listings with accessibility options?</h3>
+                <p class="text-lg">Our search results make it easy to find listings that cater to accessibility needs, including wheelchair access and other accommodations.</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 class="text-2xl font-semibold">Which listings offer delivery or takeout?</h3>
+                <p class="text-lg">Our directory clearly indicates which businesses offer delivery, takeout, or on-site services, as well as which have fast service!</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <h3 class="text-2xl font-semibold">How do I find specialty listings?</h3>
+                <p class="text-lg">Our directory highlights listings with special features, unique offerings, and exceptional qualities for those seeking particular experiences.</p>
+            </div>
+        </div>
+    </div>
+</MainLayout>

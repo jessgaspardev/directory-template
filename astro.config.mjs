@@ -1,5 +1,22 @@
-// @ts-check
-import { defineConfig } from 'astro/config';
+import {defineConfig} from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
+import sitemap from "@astrojs/sitemap";
+import path from "path";
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  output: "static",
+  site: "https://yourdirectory.com",
+  compressHTML: true,
+  build: {
+    format: "file",
+  },
+  vite: {
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        "@": path.resolve("./src"),
+      },
+    },
+  },
+  integrations: [sitemap()],
+});

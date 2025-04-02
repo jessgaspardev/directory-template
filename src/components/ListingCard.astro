@@ -1,0 +1,249 @@
+---
+import type { Listing } from '../types/listing';
+
+interface Props {
+  listing: Listing;
+}
+
+const { listing } = Astro.props;
+
+// Helper function to check if a value is meaningful (not an empty string)
+function hasValue(value: string | undefined): boolean {
+  return value !== undefined && value.trim() !== '';
+}
+
+// More accurate feature detection
+const features = [];
+
+// Service options
+const serviceOptions = listing.service_options?.toLowerCase() || '';
+if (serviceOptions.includes('delivery') && !serviceOptions.includes('no delivery') && !serviceOptions.includes('no-delivery')) {
+  features.push('delivery');
+}
+if (serviceOptions.includes('takeaway') && !serviceOptions.includes('no takeaway') && !serviceOptions.includes('no-takeaway')) {
+  features.push('takeaway');
+}
+if (serviceOptions.includes('outdoor seating') && !serviceOptions.includes('no outdoor seating')) {
+  features.push('outdoor seating');
+}
+
+// Accessibility
+const accessibility = listing.accessibility?.toLowerCase() || '';
+if (accessibility.includes('wheelchair')) {
+  features.push('wheelchair');
+}
+
+// Highlights
+const highlights = listing.highlights?.toLowerCase() || '';
+if (highlights.includes('fast service')) {
+  features.push('fast service');
+}
+
+// Parking
+const parking = listing.parking?.toLowerCase() || '';
+if (parking.includes('parking lot') && !parking.includes('no parking lot')) {
+  features.push('parking lot');
+}
+
+// Planning
+const planning = listing.planning?.toLowerCase() || '';
+if (planning.includes('accepts reservations') && !planning.includes('doesn\'t accept reservations')) {
+  features.push('accepts reservations');
+}
+
+// Pets
+const pets = listing.pets?.toLowerCase() || '';
+if (pets.includes('dogs allowed') && !pets.includes('no dogs allowed')) {
+  features.push('dogs allowed');
+}
+
+// Vegetarian options
+const offerings = listing.offerings?.toLowerCase() || '';
+if (offerings.includes('vegetarian') && !offerings.includes('no vegetarian')) {
+  features.push('vegetarian');
+}
+
+// Crowd options
+const crowd = listing.crowd?.toLowerCase() || '';
+if (crowd.includes('family friendly')) {
+  features.push('family friendly');
+}
+if (crowd.includes('tourists')) {
+  features.push('good for tourists');
+}
+if (crowd.includes('lgbtq+ friendly')) {
+  features.push('lgbtq+ friendly');
+}
+
+// Children options
+const children = listing.children?.toLowerCase() || '';
+if (children.includes('good for kids')) {
+  features.push('good for kids');
+}
+
+const featuresString = features.join(',');
+---
+
+<div 
+  class="listing-card bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow"
+  data-features={featuresString}
+>
+  
+  <h2 class="text-4xl text-blue-600 font-semibold mb-5">📍 {listing.name}</h2>
+
+  <div class="space-y-2 text-md text-gray-700">
+    {hasValue(listing.address) && (
+      <p>
+        <strong>Address:</strong> {listing.address}
+      </p>
+    )}
+    
+    {hasValue(listing.price) && (
+      <p>
+        <strong>Price Range:</strong> {listing.price}
+      </p>
+    )}
+    
+    {hasValue(listing.listing_type) && (
+      <p>
+        <strong>Type:</strong> {listing.listing_type}
+      </p>
+    )}
+
+    {/* Feature tags */}
+    {features.length > 0 && (
+      <div class="flex flex-wrap gap-2 mt-5">
+        {features.includes('delivery') && (
+          <span class="text-red-800 bg-red-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🚚 Delivery</span>
+        )}
+        {features.includes('takeaway') && (
+          <span class="text-rose-800 bg-rose-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🥡 Takeaway</span>
+        )}
+        {features.includes('accepts reservations') && (
+          <span class="text-sky-800 bg-sky-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">✍️ Accepts Reservations</span>
+        )}
+        {features.includes('fast service') && (
+          <span class="text-amber-800 bg-amber-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">💪 Fast Service</span>
+        )}
+        {features.includes('outdoor seating') && (
+          <span class="text-lime-800 bg-lime-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🌲 Outdoor Seating</span>
+        )}
+        {features.includes('wheelchair') && (
+          <span class="text-purple-800 bg-purple-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🦽 Wheelchair Access</span>
+        )}
+        {features.includes('parking lot') && (
+          <span class="text-gray-800 bg-gray-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🚗 Free Parking</span>
+        )}
+        {features.includes('dogs allowed') && (
+          <span class="text-orange-800 bg-orange-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🐶 Pet Friendly</span>
+        )}
+        {features.includes('vegetarian') && (
+          <span class="text-emerald-800 bg-emerald-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🥦 Vegetarian Options</span>
+        )}
+        {features.includes('family friendly') && (
+          <span class="text-amber-800 bg-amber-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">👪 Family Friendly</span>
+        )}
+        {features.includes('good for kids') && (
+          <span class="text-pink-800 bg-pink-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">👧 Good For Kids</span>
+        )}
+        {features.includes('good for tourists') && (
+          <span class="text-yellow-800 bg-yellow-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🤠 Good For Tourists</span>
+        )}
+        {features.includes('lgbtq+ friendly') && (
+          <span class="text-pink-800 bg-pink-100 rounded-full text-md font-medium px-1.5 py-1 mb-2 mr-2">🏳️‍🌈 LGBTQ+ Friendly</span>
+        )}
+        
+      </div>
+    )}
+
+     <div class="opening-hours pt-5">
+      <p class="text-md text-amber-600 font-semibold">Opening Hours:</p>
+      <div class="grid grid-cols-2">
+        {hasValue(listing.sat_hours) && (
+          <div class="mb-2">
+            <p class="text-md text-gray-600">
+              Saturday: {listing.sat_hours}
+            </p>
+          </div>
+        )}
+        {hasValue(listing.sun_hours) && (
+          <div class="mb-2">
+            <p class="text-sm text-gray-600">
+              Sunday: {listing.sun_hours}
+            </p>
+          </div>
+        )}
+        {hasValue(listing.mon_hours) && (
+          <div class="mb-2">
+            <p class="text-sm text-gray-600">
+              Monday: {listing.mon_hours}
+            </p>
+          </div>
+        )}
+        {hasValue(listing.tue_hours) && (
+          <div class="mb-2">
+            <p class="text-sm text-gray-600">
+              Tuesday: {listing.tue_hours}
+            </p>
+          </div>
+        )}
+        {hasValue(listing.wed_hours) && (
+          <div class="mb-2">
+            <p class="text-sm text-gray-600">
+              Wednesday: {listing.wed_hours}
+            </p>
+          </div>
+        )}
+        {hasValue(listing.thu_hours) && (
+          <div class="mb-2">
+            <p class="text-sm text-gray-600">
+              Thursday: {listing.thu_hours}
+            </p>
+          </div>
+        )}
+        {hasValue(listing.fri_hours) && (
+          <div class="mb-2">
+            <p class="text-sm text-gray-600">
+              Friday: {listing.fri_hours}
+            </p>
+          </div>
+        )}
+      </div>
+      
+    </div>
+    
+    <div class="flex flex-col lg:flex-row lg:items-center mt-4 gap-3">
+      {hasValue(listing.website) && (
+        <a 
+          href={listing.website} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-blue-600 hover:text-blue-800 transition-colors font-semibold bg-amber-200 px-3 py-3.5 rounded-full shadow-md"
+        >
+          🌐 Visit Website
+        </a>
+      )}
+
+      {hasValue(listing.google_maps) && (
+        <a 
+          href={listing.google_maps} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-white hover:text-green-200 transition-colors font-semibold bg-green-600 px-3 py-3.5 rounded-full shadow-md"
+        >
+          📍 Get Directions
+        </a>
+      )}
+      
+      {hasValue(listing.phone) && (
+        <a 
+          href={`tel:${listing.phone}`}
+          class="text-amber-200 hover:text-white transition-colors font-semibold bg-blue-600 px-3 py-3.5 rounded-full shadow-md"
+        >
+          📞 Call
+        </a>
+      )}
+    </div>
+    
+  </div>
+</div>

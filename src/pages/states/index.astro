@@ -1,0 +1,44 @@
+---
+import { loadAllStates } from '../../utils/dataLoader';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const states = await loadAllStates();
+
+// Format state name for display (e.g., "new-hampshire" -> "New Hampshire")
+function formatStateName(stateSlug: string): string {
+  return stateSlug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+---
+
+<MainLayout title="US States">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-white">
+      Available State Directories
+    </h1>
+    
+    <div class="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
+      {states.map(state => (
+        <a 
+          href={`/states/${state.toLowerCase()}`} 
+          class="bg-white shadow rounded-lg p-4 hover:bg-blue-50 transition-colors"
+        >
+          <h2 class="text-xl font-semibold text-gray-800">
+            {formatStateName(state)}
+          </h2>
+          <p class="text-gray-500 text-sm">
+            View Listings
+          </p>
+        </a>
+      ))}
+    </div>
+    
+    {states.length === 0 && (
+      <p class="text-center text-gray-600">
+        No state data available. Please add JSON files to the data directory.
+      </p>
+    )}
+  </div>
+</MainLayout>

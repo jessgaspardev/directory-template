@@ -1,0 +1,113 @@
+---
+import "../styles/global.css";
+import SeoHead from '../components/SeoHead.astro';
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  cityName?: string;
+  stateName?: string;
+  listingType?: string;
+}
+
+const { 
+  title, 
+  description, 
+  canonicalUrl, 
+  ogImage, 
+  cityName, 
+  stateName,
+  listingType
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE || 'https://yourdirectory.com';
+
+const fullUrl = canonicalUrl || new URL(Astro.url.pathname, siteUrl).toString();
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+
+
+    <SeoHead 
+      title={title}
+      description={description}
+      canonicalUrl={fullUrl}
+      ogImage={ogImage}
+      cityName={cityName}
+      stateName={stateName}
+      listingType={listingType}
+    />
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Directory Website",
+      "url": siteUrl,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${siteUrl}/search?q={search_term_string}`,
+        "query-input": "required name=search_term_string"
+      }
+    })} />
+    <title>{title} | Directory Website</title>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-blue-600 shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center flex-wrap">
+            <a href="/" class="text-2xl font-bold text-white">
+                Directory Website
+            </a>
+            <div class="text-amber-200 font-semibold">
+                <a href="/states" class="hover:text-white pr-5 pt-5">
+                    States
+                </a>
+                <a href="/about" class="hover:text-white">
+                    About Us
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="bg-blue-100">
+        <slot />
+    </main>
+
+    <footer class="bg-blue-600 py-6 text-center">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-white">
+                        © {new Date().getFullYear()} Directory Website
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2 text-white">Popular Cities</h3>
+                    <ul class="grid grid-cols-2 gap-4 text-sm">
+                        <li><a href="/listings-in-chicago-illinois" class="text-amber-200 hover:text-amber-600">Chicago Listings</a></li>
+                        <li><a href="/listings-in-miami-florida" class="text-amber-200 hover:text-amber-600">Miami Listings</a></li>
+                        <li><a href="/listings-in-los-angeles-california" class="text-amber-200 hover:text-amber-600">Los Angeles Listings</a></li>
+                        <li><a href="/listings-in-new-york-new-york" class="text-amber-200 hover:text-amber-600">New York Listings</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
