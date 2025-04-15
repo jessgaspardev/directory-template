@@ -1,0 +1,379 @@
+---
+import { loadAllStates, getListingsInCity } from '../utils/dataLoader';
+import { formatStateName } from '../utils/urlHelper';
+import MainLayout from '../layouts/MainLayout.astro';
+import type { Listing } from '../types/listing';
+
+export async function getStaticPaths() {
+  // Dynamically generate paths for all listings in all cities across all states
+  const states = await loadAllStates();
+  const paths = [];
+  
+  for (const state of states) {
+    const cities = await import('../utils/dataLoader').then(m => 
+      m.getAvailableCitiesInState(state)
+    );
+    
+    for (const city of cities) {
+      const listings = await getListingsInCity(state, city);
+      
+      for (const listing of listings) {
+        // Create URL-friendly slugs
+        const stateSlug = state.toLowerCase().replace(/\s+/g, '-');
+        const citySlug = city.toLowerCase().replace(/\s+/g, '-');
+        const listingSlug = listing.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        
+        paths.push({
+          params: { 
+            listing: `${listingSlug}-in-${citySlug}-${stateSlug}`
+          },
+          props: { 
+            listingData: listing,
+            originalCity: city, 
+            originalState: state 
+          }
+        });
+      }
+    }
+  }
+  
+  return paths;
+}
+
+// Get parameters and props
+const { listing } = Astro.params;
+const { listingData, originalCity, originalState } = Astro.props;
+
+// Format the state name for display
+const formattedStateName = formatStateName(originalState || '');
+
+// Function to check if a value exists
+function hasValue(value: string | undefined): boolean {
+  return value !== undefined && value.trim() !== '';
+}
+
+// Prepare schema markup for the listing
+const listingSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": listingData.name,
+  "description": listingData.description,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": listingData.address?.split(',')[0] || "",
+    "addressLocality": listingData.city || originalCity,
+    "addressRegion": listingData.state || originalState
+  },
+  "telephone": listingData.phone || "",
+  "url": listingData.website || "",
+  "openingHoursSpecification": [
+    hasValue(listingData.mon_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Monday",
+      "opens": listingData.mon_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.mon_hours?.split('-')[1]?.trim() || ""
+    } : null,
+    hasValue(listingData.tue_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Tuesday",
+      "opens": listingData.tue_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.tue_hours?.split('-')[1]?.trim() || ""
+    } : null,
+    hasValue(listingData.wed_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Wednesday",
+      "opens": listingData.wed_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.wed_hours?.split('-')[1]?.trim() || ""
+    } : null,
+    hasValue(listingData.thu_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Thursday",
+      "opens": listingData.thu_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.thu_hours?.split('-')[1]?.trim() || ""
+    } : null,
+    hasValue(listingData.fri_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Friday",
+      "opens": listingData.fri_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.fri_hours?.split('-')[1]?.trim() || ""
+    } : null,
+    hasValue(listingData.sat_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": listingData.sat_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.sat_hours?.split('-')[1]?.trim() || ""
+    } : null,
+    hasValue(listingData.sun_hours) ? {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Sunday",
+      "opens": listingData.sun_hours?.split('-')[0]?.trim() || "",
+      "closes": listingData.sun_hours?.split('-')[1]?.trim() || ""
+    } : null
+  ].filter(Boolean)
+};
+
+// Create SEO description
+const seoDescription = `Learn more about ${listingData.name} in ${originalCity}, ${formattedStateName}. ${
+  listingData.description || `Find information, hours, contact details, and more for this local establishment.`
+}`;
+
+// Determine the return URL to the city listings page
+const returnUrl = `/listings-in-${originalCity.toLowerCase().replace(/\s+/g, '-')}-${originalState.toLowerCase().replace(/\s+/g, '-')}`;
+---
+
+<MainLayout 
+  title={`${listingData.name} - ${originalCity}, ${formattedStateName}`} 
+  description={seoDescription}
+  cityName={originalCity}
+  stateName={formattedStateName}
+>
+  <div class="container mx-auto px-4 py-8">
+    <!-- Listing Header -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-blue-600 mb-2">{listingData.name}</h1>
+          <p class="text-gray-600 mb-2">{originalCity}, {formattedStateName}</p>
+          
+          {listingData.rating && (
+            <div class="flex items-center mb-2">
+              <div class="flex">
+                {Array.from({ length: Math.floor(listingData.rating) }).map(() => (
+                  <span class="text-yellow-500">★</span>
+                ))}
+                {listingData.rating % 1 > 0 && (
+                  <span class="text-yellow-500">★</span>
+                )}
+                {Array.from({ length: 5 - Math.ceil(listingData.rating) }).map(() => (
+                  <span class="text-gray-300">★</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+          {hasValue(listingData.website) && (
+            <a 
+              href={listingData.website} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="text-blue-600 hover:text-blue-800 transition-colors font-semibold bg-amber-100 px-4 py-2 rounded-lg shadow-sm"
+            >
+              🌐 Visit Website
+            </a>
+          )}
+          
+          {hasValue(listingData.google_maps) && (
+            <a 
+              href={listingData.google_maps} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="text-white hover:text-green-100 transition-colors font-semibold bg-green-600 px-4 py-2 rounded-lg shadow-sm"
+            >
+              📍 Get Directions
+            </a>
+          )}
+          
+          {hasValue(listingData.phone) && (
+            <a 
+              href={`tel:${listingData.phone}`}
+              class="text-white hover:text-blue-100 transition-colors font-semibold bg-blue-600 px-4 py-2 rounded-lg shadow-sm"
+            >
+              📞 {listingData.phone}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column - Main Details -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          {hasValue(listingData.description) && (
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold mb-3">About</h2>
+              <p class="text-gray-700">{listingData.description}</p>
+            </div>
+          )}
+          
+          <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-3">Location</h2>
+            <p class="text-gray-700">{listingData.address}</p>
+          </div>
+          
+          {hasValue(listingData.listing_type) && (
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold mb-3">Type</h2>
+              <p class="text-gray-700">{listingData.listing_type}</p>
+            </div>
+          )}
+          
+          {hasValue(listingData.price) && (
+            <div>
+              <h2 class="text-xl font-semibold mb-3">Price Range</h2>
+              <p class="text-gray-700">{listingData.price}</p>
+            </div>
+          )}
+        </div>
+        
+        <!-- Features Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 class="text-xl font-semibold mb-4">Features & Offerings</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {hasValue(listingData.service_options) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Service Options</h3>
+                <p class="text-gray-700">{listingData.service_options}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.highlights) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Highlights</h3>
+                <p class="text-gray-700">{listingData.highlights}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.accessibility) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Accessibility</h3>
+                <p class="text-gray-700">{listingData.accessibility}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.offerings) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Offerings</h3>
+                <p class="text-gray-700">{listingData.offerings}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.dining_options) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Dining Options</h3>
+                <p class="text-gray-700">{listingData.dining_options}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.atmosphere) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Atmosphere</h3>
+                <p class="text-gray-700">{listingData.atmosphere}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.crowd) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Crowd</h3>
+                <p class="text-gray-700">{listingData.crowd}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.payments) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Payment Methods</h3>
+                <p class="text-gray-700">{listingData.payments}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.children) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Children</h3>
+                <p class="text-gray-700">{listingData.children}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.parking) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Parking</h3>
+                <p class="text-gray-700">{listingData.parking}</p>
+              </div>
+            )}
+            
+            {hasValue(listingData.pets) && (
+              <div>
+                <h3 class="text-lg font-medium text-blue-600 mb-2">Pets</h3>
+                <p class="text-gray-700">{listingData.pets}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column - Hours & Sidebar -->
+      <div>
+        <!-- Hours Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 class="text-xl font-semibold mb-4">Business Hours</h2>
+          
+          <div class="space-y-2">
+            {hasValue(listingData.mon_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Monday:</span>
+                <span class="text-gray-700">{listingData.mon_hours}</span>
+              </div>
+            )}
+            
+            {hasValue(listingData.tue_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Tuesday:</span>
+                <span class="text-gray-700">{listingData.tue_hours}</span>
+              </div>
+            )}
+            
+            {hasValue(listingData.wed_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Wednesday:</span>
+                <span class="text-gray-700">{listingData.wed_hours}</span>
+              </div>
+            )}
+            
+            {hasValue(listingData.thu_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Thursday:</span>
+                <span class="text-gray-700">{listingData.thu_hours}</span>
+              </div>
+            )}
+            
+            {hasValue(listingData.fri_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Friday:</span>
+                <span class="text-gray-700">{listingData.fri_hours}</span>
+              </div>
+            )}
+            
+            {hasValue(listingData.sat_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Saturday:</span>
+                <span class="text-gray-700">{listingData.sat_hours}</span>
+              </div>
+            )}
+            
+            {hasValue(listingData.sun_hours) && (
+              <div class="flex justify-between">
+                <span class="font-medium">Sunday:</span>
+                <span class="text-gray-700">{listingData.sun_hours}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Back Button -->
+    <div class="mt-8 text-center">
+      <a 
+        href={returnUrl}
+        class="bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-block"
+      >
+        Back to All Listings in {originalCity}
+      </a>
+    </div>
+  </div>
+  
+  <script type="application/ld+json" set:html={JSON.stringify(listingSchema)} />
+</MainLayout>

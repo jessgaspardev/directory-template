@@ -243,6 +243,13 @@ const featuresString = features.join(',');
           📞 Call
         </a>
       )}
+
+      <a 
+        href={`/${listing.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}-in-${listing.city.toLowerCase().replace(/\s+/g, '-')}-${listing.state.toLowerCase().replace(/\s+/g, '-')}`}
+        class="text-white hover:text-blue-100 transition-colors font-semibold bg-blue-600 px-3 py-3.5 rounded-full shadow-md"
+      >
+        ℹ️ More Information
+      </a>
     </div>
     
   </div>
