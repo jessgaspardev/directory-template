@@ -88,6 +88,21 @@ const featuresString = features.join(',');
   class="listing-card bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow"
   data-features={featuresString}
 >
+
+  {/* Image Section */}
+  {hasValue(listing.image) ? (
+    <div class="w-full h-48 overflow-hidden">
+      <img 
+        src={listing.image} 
+        alt={`Photo of ${listing.name}`} 
+        class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+      />
+    </div>
+  ) : (
+    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+      <span class="text-4xl text-gray-400">📍</span>
+    </div>
+  )}
   
   <h2 class="text-4xl text-blue-600 font-semibold mb-5">📍 {listing.name}</h2>
 
@@ -104,9 +119,9 @@ const featuresString = features.join(',');
       </p>
     )}
     
-    {hasValue(listing.listing_type) && (
+    {hasValue(listing.type) && (
       <p>
-        <strong>Type:</strong> {listing.listing_type}
+        <strong>Type:</strong> {listing.type}
       </p>
     )}
 

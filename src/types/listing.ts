@@ -1,8 +1,9 @@
 export interface Listing {
   name: string;
   description: string;
+  image: string;
   address: string;
-  listing_type: string;
+  type: string;
   price: string;
   phone: string;
   rating: number;

@@ -7,15 +7,14 @@ interface Props {
 
 const { state, stateSlug, className = "" } = Astro.props;
 
-// Extract just the state part from the stateSlug
-// This handles cases where stateSlug might incorrectly contain part of the city
-const cleanStateSlug = stateSlug.split('-').pop() || stateSlug;
+// Simple solution: just use the slug as provided
+const cleanStateSlug = stateSlug.toLowerCase();
 ---
 
 <div class="mt-8 text-center">
   <a 
     href={`/states/${cleanStateSlug}`} 
-    class={`text-blue-600 hover:text-blue-800 bg-white px-4 py-3 rounded-md transition-colors ${className}`}
+    class={`text-green-600 hover:text-green-800 bg-white px-4 py-3 rounded-md transition-colors ${className}`}
   >
     Back to {state} Cities
   </a>

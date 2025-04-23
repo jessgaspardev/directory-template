@@ -130,26 +130,21 @@ const returnUrl = `/listings-in-${originalCity.toLowerCase().replace(/\s+/g, '-'
   <div class="container mx-auto px-4 py-8">
     <!-- Listing Header -->
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+       {/* Image Section */}
+      {hasValue(listingData.image) && (
+        <div class="w-full h-64 md:h-80 overflow-hidden">
+          <img 
+            src={listingData.image} 
+            alt={`Image of ${listingData.name}`} 
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
           <h1 class="text-3xl font-bold text-blue-600 mb-2">{listingData.name}</h1>
           <p class="text-gray-600 mb-2">{originalCity}, {formattedStateName}</p>
           
-          {listingData.rating && (
-            <div class="flex items-center mb-2">
-              <div class="flex">
-                {Array.from({ length: Math.floor(listingData.rating) }).map(() => (
-                  <span class="text-yellow-500">★</span>
-                ))}
-                {listingData.rating % 1 > 0 && (
-                  <span class="text-yellow-500">★</span>
-                )}
-                {Array.from({ length: 5 - Math.ceil(listingData.rating) }).map(() => (
-                  <span class="text-gray-300">★</span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
         
         <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
@@ -204,10 +199,10 @@ const returnUrl = `/listings-in-${originalCity.toLowerCase().replace(/\s+/g, '-'
             <p class="text-gray-700">{listingData.address}</p>
           </div>
           
-          {hasValue(listingData.listing_type) && (
+          {hasValue(listingData.type) && (
             <div class="mb-6">
               <h2 class="text-xl font-semibold mb-3">Type</h2>
-              <p class="text-gray-700">{listingData.listing_type}</p>
+              <p class="text-gray-700">{listingData.type}</p>
             </div>
           )}
           

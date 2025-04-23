@@ -143,10 +143,10 @@ const localBusinessSchema = {
       </div>
     )}
     
-    <BackToState 
-      state={formattedStateName} 
-      stateSlug={state.includes('-') ? state.split('-').pop() || state : state} 
-    />
+ <BackToState 
+  state={formattedStateName} 
+  stateSlug={originalState.toLowerCase().replace(/\s+/g, '-')} 
+/>
   </div>
   
   <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
