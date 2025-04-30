@@ -29,10 +29,10 @@ const states = await loadAllStates();
             <p class="text-xl font-semibold mb-2 text-gray-800 pt-5">Get directions and contact information plus:</p>
         </div>
         
-        <div class="grid md:grid-cols-2 gap-6 md:px-15 lg:px-30">
+        <div class="grid md:grid-cols-2 gap-6 md:px-15 lg:px-30"> 
             <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <p class="text-xl font-semibold">⭐ Average rating</p>
-            </div>
+                <p class="text-xl font-semibold">🥡 Amenities</p>
+            </div>  
             <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
                 <p class="text-xl font-semibold">🥡 Service options</p>
             </div>
@@ -68,7 +68,16 @@ const states = await loadAllStates();
             <p class="text-3xl lg:text-4xl capitalize pb-10">📍 Popular Cities</p>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:px-15 lg:px-30">
                 <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-new-york-new-york">New York, NY</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
                     <a class="text-xl font-semibold" href="/listings-in-los-angeles-california">Los Angeles, CA</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-chicago-illinois">Chicago, IL</a>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <a class="text-xl font-semibold" href="/listings-in-philadelphia-pennsylvania">Philadelphia, PA</a>
                 </div>
                 <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
                     <a class="text-xl font-semibold" href="/listings-in-dallas-texas">Dallas, TX</a>
@@ -89,12 +98,6 @@ const states = await loadAllStates();
                     <a class="text-xl font-semibold" href="/listings-in-san-francisco-california">San Francisco, CA</a>
                 </div>
                 <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                    <a class="text-xl font-semibold" href="/listings-in-chicago-illinois">Chicago, IL</a>
-                </div>
-                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                    <a class="text-xl font-semibold" href="/listings-in-philadelphia-pennsylvania">Philadelphia, PA</a>
-                </div>
-                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
                     <a class="text-xl font-semibold" href="/listings-in-austin-texas">Austin, TX</a>
                 </div>
                 <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
@@ -107,29 +110,4 @@ const states = await loadAllStates();
         </div>
     </div>
 
-    <div class="py-30 flex flex-col justify-center bg-blue-600 px-5">
-        <h2 class="text-3xl lg:text-4xl text-center font-semibold text-amber-200">FAQs</h2>
-        <div class="grid grid-cols-1 gap-6 md:px-15 lg:px-30 pt-10">
-            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 class="text-2xl font-semibold">What are the highest-rated listings in my area?</h3>
-                <p class="text-lg">Browse top-rated establishments based on verified customer reviews, expert opinions, and our proprietary rating system. We only showcase the absolute best listings!</p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 class="text-2xl font-semibold">What are the best listings near me?</h3>
-                <p class="text-lg">Our directory helps you find top-rated listings in your area based on customer reviews, specialty services, and atmosphere.</p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 class="text-2xl font-semibold">How do I find listings with accessibility options?</h3>
-                <p class="text-lg">Our search results make it easy to find listings that cater to accessibility needs, including wheelchair access and other accommodations.</p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 class="text-2xl font-semibold">Which listings offer delivery or takeout?</h3>
-                <p class="text-lg">Our directory clearly indicates which businesses offer delivery, takeout, or on-site services, as well as which have fast service!</p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <h3 class="text-2xl font-semibold">How do I find specialty listings?</h3>
-                <p class="text-lg">Our directory highlights listings with special features, unique offerings, and exceptional qualities for those seeking particular experiences.</p>
-            </div>
-        </div>
-    </div>
 </MainLayout>

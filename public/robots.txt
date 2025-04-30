@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wheresthepizza.com/sitemap-index.xml
